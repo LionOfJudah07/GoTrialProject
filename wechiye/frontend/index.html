@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WECHIYE - Smart Expense Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { DEFAULT: '#0d631b', container: '#2e7d32', fixed: '#1b5e20' },
+                        secondary: { DEFAULT: '#795900', container: '#a68a00' },
+                        tertiary: { DEFAULT: '#ab1118', container: '#d32f2f' },
+                        surface: {
+                            DEFAULT: '#f9f9f9',
+                            container_low: '#f0f0f0',
+                            container_lowest: '#ffffff',
+                            container_high: '#e8e8e8',
+                            container_highest: '#e0e0e0',
+                        },
+                        on_surface: '#1a1c1c',
+                    },
+                    fontFamily: {
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        ambient: '0 12px 24px rgba(26, 28, 28, 0.04)',
+                        floating: '0 8px 16px rgba(26, 28, 28, 0.08)',
+                    },
+                    backgroundImage: {
+                        'gradient-primary': 'linear-gradient(135deg, #0d631b 0%, #2e7d32 100%)',
+                    },
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <link href="./css/style.css" rel="stylesheet">
+</head>
+<body class="bg-surface dark:bg-gray-900 text-on_surface dark:text-gray-100 font-body">
+    <div id="app" class="flex h-screen">
+        <!-- Glassmorphism Sidebar -->
+        <nav class="w-64 bg-surface-container-lowest dark:bg-gray-800 shadow-ambient flex flex-col relative z-10">
+            <div class="p-6">
+                <h1 class="text-2xl font-bold font-display text-primary dark:text-green-400 tracking-tight">WECHIYE</h1>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Smart Expense Tracker</p>
+            </div>
+            <div class="flex-1 px-3 space-y-1">
+                <a href="#dashboard" class="nav-link flex items-center px-4 py-3 rounded-tilet hover:bg-surface-container_low dark:hover:bg-gray-700 transition-all duration-200">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>
+                    <span data-i18n="dashboard">Dashboard</span>
+                </a>
+                <a href="#transactions" class="nav-link flex items-center px-4 py-3 rounded-tilet hover:bg-surface-container_low dark:hover:bg-gray-700 transition-all duration-200">
+                    <i data-lucide="receipt" class="w-5 h-5 mr-3"></i>
+                    <span data-i18n="transactions">Transactions</span>
+                </a>
+                <a href="#budgets" class="nav-link flex items-center px-4 py-3 rounded-tilet hover:bg-surface-container_low dark:hover:bg-gray-700 transition-all duration-200">
+                    <i data-lucide="target" class="w-5 h-5 mr-3"></i>
+                    <span data-i18n="budgets">Budgets</span>
+                </a>
+                <a href="#profile" class="nav-link flex items-center px-4 py-3 rounded-tilet hover:bg-surface-container_low dark:hover:bg-gray-700 transition-all duration-200">
+                    <i data-lucide="user" class="w-5 h-5 mr-3"></i>
+                    <span data-i18n="profile">Profile</span>
+                </a>
+                <a href="#settings" class="nav-link flex items-center px-4 py-3 rounded-tilet hover:bg-surface-container_low dark:hover:bg-gray-700 transition-all duration-200">
+                    <i data-lucide="settings" class="w-5 h-5 mr-3"></i>
+                    <span data-i18n="settings">Settings</span>
+                </a>
+            </div>
+            <div class="p-4 mt-auto">
+                <button id="theme-toggle" class="w-full flex items-center px-4 py-3 rounded-tilet hover:bg-surface-container_low dark:hover:bg-gray-700 transition-all duration-200">
+                    <i data-lucide="sun" class="w-5 h-5 mr-3 dark:hidden"></i>
+                    <i data-lucide="moon" class="w-5 h-5 mr-3 hidden dark:block"></i>
+                    <span data-i18n="toggle_theme">Toggle Theme</span>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto bg-surface dark:bg-gray-900 p-6 md:p-8">
+            <div id="page-container" class="max-w-7xl mx-auto animate-fade-in"></div>
+        </main>
+    </div>
+    
+    <!-- Password Modal with Glassmorphism -->
+    <div id="password-modal" class="fixed inset-0 bg-black/50 backdrop-blur-glass flex items-center justify-center hidden z-50">
+        <div class="bg-surface-container-lowest dark:bg-gray-800 rounded-tilet p-8 w-full max-w-md shadow-floating animate-slide-up">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
+                    <i data-lucide="lock" class="w-8 h-8 text-primary"></i>
+                </div>
+                <h2 class="text-xl font-display font-semibold" data-i18n="enter_master_password">Enter Master Password</h2>
+                <p class="text-sm text-gray-500 mt-2" data-i18n="first_time_hint">First time? Set your master password.</p>
+            </div>
+            <input type="password" id="master-password" class="w-full p-3 border border-surface-container_highest rounded-lg dark:bg-gray-700 dark:border-gray-600 mb-4 focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="Password">
+            <div class="flex items-center mb-6">
+                <input type="checkbox" id="remember-me" class="w-4 h-4 text-primary rounded mr-2">
+                <label for="remember-me" class="text-sm text-gray-600 dark:text-gray-300" data-i18n="remember_me">Remember me</label>
+            </div>
+            <div class="flex justify-end">
+                <button id="unlock-btn" class="px-6 py-3 bg-gradient-primary text-white rounded-lg hover:opacity-90 transition-opacity font-medium shadow-floating" data-i18n="unlock">Unlock</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-6 right-6 space-y-3 z-50"></div>
+    
+    <script type="module" src="./js/app.js"></script>
+</body>
+</html>

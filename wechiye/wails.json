@@ -1,0 +1,22 @@
+{
+    "name": "wechiye",
+    "outputfilename": "wechiye",
+    "frontend:install": "",
+    "frontend:build": "",
+    "frontend:dev:watcher": "",
+    "frontend:dev:serverUrl": "http://localhost:34115",
+    "author": {
+      "name": "Your Name",
+      "email": "you@example.com"
+    },
+    "info": {
+      "companyName": "WECHIYE",
+      "productName": "WECHIYE",
+      "productVersion": "1.0.0",
+      "copyright": "Copyright © 2024",
+      "comments": "Secure personal expense tracker"
+    },
+    "build": {
+      "tags": "sqlite_see"
+    }
+  }
